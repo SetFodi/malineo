@@ -1,0 +1,201 @@
+/* ---------------------------------------------------------------
+   Fonts. Self-hosted so the guide works offline.
+   Bricolage Grotesque carries every heading and sentence.
+   Mali is the handwritten voice, used only for small personal asides.
+   Anything that imitates the Mac itself (keys, menus) uses the system font.
+---------------------------------------------------------------- */
+@font-face {
+  font-family: 'Bricolage';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 200 800;
+  font-stretch: 75% 100%;
+  src: url('../../node_modules/@fontsource-variable/bricolage-grotesque/files/bricolage-grotesque-latin-standard-normal.woff2')
+    format('woff2-variations');
+}
+@font-face {
+  font-family: 'Mali';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 400;
+  src: url('../../node_modules/@fontsource/mali/files/mali-latin-400-normal.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Mali';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 500;
+  src: url('../../node_modules/@fontsource/mali/files/mali-latin-500-normal.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Mali';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 600;
+  src: url('../../node_modules/@fontsource/mali/files/mali-latin-600-normal.woff2') format('woff2');
+}
+
+/* Georgian letters. Latin words inside Georgian text still use Bricolage. */
+@font-face {
+  font-family: 'Noto Georgian';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 100 900;
+  font-stretch: 62.5% 100%;
+  src: url('../../node_modules/@fontsource-variable/noto-sans-georgian/files/noto-sans-georgian-georgian-standard-normal.woff2')
+    format('woff2-variations');
+  unicode-range: U+0589, U+10A0-10FF, U+1C90-1CBA, U+1CBD-1CBF, U+205A, U+2D00-2D2F, U+2E31;
+}
+
+:root {
+  /* Blush ramp: one hue, sampled from the MacBook Neo's anodised pink. */
+  --blush-25: oklch(0.985 0.008 20);
+  --blush-50: oklch(0.968 0.016 15);
+  --blush-100: oklch(0.946 0.024 12);
+  --blush-200: oklch(0.915 0.032 11);
+  --blush-300: oklch(0.875 0.038 10);
+  --blush-400: oklch(0.82 0.05 9);
+  --blush-500: oklch(0.76 0.075 8);
+  --rose-500: oklch(0.7 0.14 6);
+  --rose-600: oklch(0.6 0.185 5);
+  --rose-700: oklch(0.5 0.17 4);
+  --berry-800: oklch(0.36 0.1 358);
+  --berry-900: oklch(0.26 0.07 356);
+  --berry-950: oklch(0.2 0.055 352);
+
+  /* The laptop's own materials. */
+  --alu-hi: oklch(0.925 0.026 14);
+  --alu: oklch(0.885 0.032 11);
+  --alu-lo: oklch(0.835 0.038 9);
+  --alu-edge: oklch(0.79 0.042 8);
+  --alu-under: oklch(0.7 0.05 6);
+  --key: oklch(0.948 0.02 14);
+  --key-ink: oklch(0.45 0.075 4);
+  --key-on: var(--rose-600);
+  --glass: oklch(0.16 0.02 350);
+
+  --font-display: 'Bricolage', 'Noto Georgian', ui-sans-serif, system-ui, sans-serif;
+  --font-hand: 'Mali', ui-rounded, 'Noto Georgian', 'Bradley Hand', cursive;
+  --font-system: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', system-ui, sans-serif;
+
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+  --ease-soft: cubic-bezier(0.45, 0.05, 0.25, 1);
+
+  --gutter: clamp(1.5rem, 5.5vw, 5.5rem);
+}
+
+/* Colour fields. A section picks one; everything inside reads these roles. */
+.field-blush {
+  --bg: var(--blush-100);
+  --ink: var(--berry-900);
+  --ink-soft: oklch(0.42 0.07 358);
+  --ink-faint: oklch(0.52 0.06 0);
+  --accent: var(--rose-600);
+  --accent-ink: var(--rose-700);
+  --line: oklch(0.86 0.045 9);
+  --chip: oklch(0.905 0.035 10);
+}
+.field-berry {
+  --bg: var(--berry-950);
+  --ink: var(--blush-50);
+  --ink-soft: oklch(0.84 0.045 8);
+  --ink-faint: oklch(0.72 0.06 5);
+  --accent: oklch(0.72 0.15 5);
+  --accent-ink: oklch(0.84 0.1 6);
+  --line: oklch(0.34 0.07 355);
+  --chip: oklch(0.28 0.07 354);
+}
+.field-petal {
+  --bg: oklch(0.865 0.062 8);
+  --ink: oklch(0.24 0.07 356);
+  --ink-soft: oklch(0.36 0.08 358);
+  --ink-faint: oklch(0.43 0.08 0);
+  --accent: oklch(0.52 0.19 4);
+  --accent-ink: oklch(0.42 0.16 3);
+  --line: oklch(0.78 0.075 8);
+  --chip: oklch(0.82 0.075 8);
+}
+.field-paper {
+  --bg: var(--blush-25);
+  --ink: var(--berry-900);
+  --ink-soft: oklch(0.42 0.07 358);
+  --ink-faint: oklch(0.52 0.06 0);
+  --accent: var(--rose-600);
+  --accent-ink: var(--rose-700);
+  --line: oklch(0.9 0.03 10);
+  --chip: var(--blush-100);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  scrollbar-color: var(--blush-500) transparent;
+  scrollbar-width: thin;
+}
+
+body {
+  margin: 0;
+  background: var(--blush-100);
+  color: var(--berry-900);
+  font-family: var(--font-display);
+  font-size: 1.0625rem;
+  line-height: 1.55;
+  font-weight: 420;
+  overflow-x: clip;
+}
+
+::selection {
+  background: oklch(0.7 0.14 6 / 0.35);
+  color: inherit;
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent, var(--rose-600));
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
+h1,
+h2,
+h3,
+p,
+ul,
+ol,
+dl,
+dd,
+figure {
+  margin: 0;
+}
+ul,
+ol {
+  padding: 0;
+  list-style: none;
+}
+button {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+}
+a {
+  color: inherit;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}

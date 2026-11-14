@@ -1,0 +1,468 @@
+/* ---------------------------------------------------------------
+   The MacBook, built from flat planes in CSS 3D.
+   All sizes are in the laptop's own units (1000 wide); the whole
+   thing is scaled from outside, so nothing here depends on viewport.
+---------------------------------------------------------------- */
+
+.lt-pos {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 0;
+  height: 0;
+  will-change: transform;
+}
+.lt-scene {
+  position: absolute;
+  width: 0;
+  height: 0;
+  perspective: 3400px;
+}
+.lt-rig {
+  position: absolute;
+  width: 0;
+  height: 0;
+  transform-style: preserve-3d;
+}
+.lt-deck {
+  position: absolute;
+  left: -500px;
+  top: -347px;
+  width: 1000px;
+  height: 694px;
+  transform-style: preserve-3d;
+  transform: rotateX(90deg);
+}
+
+/* No blur filter here: filters inside a 3D scene are unreliable in Safari,
+   so the softness is all in the gradient. */
+.lt-shadow {
+  position: absolute;
+  inset: -90px -80px -130px;
+  background: radial-gradient(
+    closest-side,
+    oklch(0.3 0.09 356 / 0.34) 0%,
+    oklch(0.3 0.09 356 / 0.26) 45%,
+    oklch(0.3 0.09 356 / 0.1) 75%,
+    oklch(0.3 0.09 356 / 0) 100%
+  );
+  transform: translateZ(-44px);
+  transition: opacity 0.6s var(--ease-out);
+}
+.stage[data-field='berry'] .lt-shadow {
+  opacity: 0.25;
+}
+
+.lt-layer {
+  position: absolute;
+  inset: 0;
+  border-radius: 34px;
+  background: var(--alu-edge);
+}
+.lt-layer.is-chamfer {
+  background: var(--alu-hi);
+}
+.lt-layer.is-under {
+  background: var(--alu-under);
+}
+
+.lt-top {
+  position: absolute;
+  inset: 0;
+  border-radius: 34px;
+  background: linear-gradient(180deg, var(--alu-hi) 0%, var(--alu) 46%, var(--alu-lo) 100%);
+  box-shadow:
+    inset 0 0 0 1.5px oklch(0.95 0.015 14 / 0.9),
+    inset 0 0 0 3px oklch(0.8 0.04 8 / 0.35);
+}
+/* Light from the display, spilling onto the keys. */
+.lt-spill {
+  position: absolute;
+  inset: 0;
+  border-radius: 34px;
+  background: linear-gradient(180deg, oklch(0.98 0.03 350 / 0.55) 0%, oklch(0.98 0.03 350 / 0) 62%);
+  pointer-events: none;
+}
+/* The dark gap where the lid meets the deck. */
+.lt-hinge {
+  position: absolute;
+  left: 86px;
+  right: 86px;
+  top: 0;
+  height: 19px;
+  border-radius: 0 0 9px 9px;
+  background: linear-gradient(180deg, oklch(0.5 0.05 4) 0%, oklch(0.66 0.05 6) 38%, oklch(0.8 0.042 9) 100%);
+  box-shadow: inset 0 -1px 0 oklch(0.94 0.02 14 / 0.7);
+}
+/* The thumb scoop on the front edge, for lifting the lid. */
+.lt-scoop {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  width: 176px;
+  height: 9px;
+  margin-left: -88px;
+  border-radius: 12px 12px 0 0;
+  background: linear-gradient(180deg, oklch(0.72 0.05 6), oklch(0.82 0.042 9));
+  box-shadow:
+    inset 0 2px 3px oklch(0.5 0.08 4 / 0.4),
+    0 -1px 0 oklch(0.95 0.015 14 / 0.7);
+}
+/* Fine grain, like bead-blasted, anodised aluminium. */
+.lt-top::after,
+.lt-lid-outer::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.25' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.42 0 0 0 0 0.16 0 0 0 0 0.24 0 0 0 0.55 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  opacity: 0.13;
+  pointer-events: none;
+}
+
+/* ---------- keyboard ---------- */
+.kb {
+  --p: 63.5px; /* key pitch */
+  --g: 7px; /* gap */
+  position: absolute;
+  left: 39px;
+  top: 44px;
+  width: 922px;
+  padding: 4px;
+  border-radius: 13px;
+  background: linear-gradient(180deg, oklch(0.77 0.05 7), oklch(0.8 0.047 8));
+  box-shadow:
+    inset 0 2px 4px oklch(0.5 0.09 4 / 0.45),
+    inset 0 0 0 1px oklch(0.7 0.055 6 / 0.6),
+    0 1px 0 oklch(0.96 0.012 14 / 0.9);
+  display: grid;
+  gap: var(--g);
+  font-family: var(--font-system);
+  user-select: none;
+}
+.kb-row {
+  display: flex;
+  gap: var(--g);
+  height: 54px;
+}
+.key {
+  position: relative;
+  flex: none;
+  width: calc(var(--u, 1) * var(--p) - var(--g));
+  border-radius: 8px;
+  background: linear-gradient(180deg, oklch(0.962 0.016 14), var(--key) 70%);
+  color: var(--key-ink);
+  box-shadow:
+    0 1.5px 0 oklch(0.72 0.055 6),
+    0 3px 4px oklch(0.5 0.09 4 / 0.22),
+    inset 0 1px 0 oklch(1 0 0 / 0.75);
+  display: grid;
+  place-items: center;
+  transition:
+    background-color 0.14s var(--ease-out),
+    color 0.14s var(--ease-out),
+    transform 0.14s var(--ease-out),
+    box-shadow 0.14s var(--ease-out);
+}
+.key .k-main {
+  font-size: 20px;
+  font-weight: 500;
+  line-height: 1;
+}
+.key .k-top {
+  position: absolute;
+  top: 7px;
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1;
+}
+.key.has-top .k-main {
+  margin-top: 17px;
+  font-size: 17px;
+}
+.key .k-word {
+  position: absolute;
+  bottom: 7px;
+  left: 9px;
+  right: 9px;
+  font-size: 11.5px;
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: 0.005em;
+  text-align: center;
+}
+.key[data-align='l'] .k-word {
+  text-align: left;
+}
+.key[data-align='r'] .k-word {
+  text-align: right;
+}
+.key .k-glyph {
+  position: absolute;
+  top: 7px;
+  right: 9px;
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 1;
+}
+.key[data-align='l'] .k-glyph {
+  right: auto;
+  left: 9px;
+}
+.key[data-id='Fn'] .k-glyph {
+  left: 9px;
+  right: auto;
+  top: auto;
+  bottom: 7px;
+}
+.key[data-id='Fn'] .k-word {
+  text-align: right;
+  bottom: auto;
+  top: 8px;
+}
+.key .k-globe {
+  display: block;
+  width: 13px;
+  height: 13px;
+}
+.key.is-fkey .k-word {
+  bottom: 5px;
+  font-size: 8.5px;
+  text-align: center;
+  opacity: 0.75;
+}
+.k-ficon {
+  position: absolute;
+  left: 50%;
+  top: 8px;
+  width: 17px;
+  height: 17px;
+  margin-left: -8.5px;
+}
+.key[data-id='CapsLock']::before {
+  content: '';
+  position: absolute;
+  left: 10px;
+  top: 10px;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: oklch(0.8 0.05 8);
+}
+.key[data-id='Power']::before {
+  content: '';
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 1.5px oklch(0.84 0.04 9);
+}
+
+.key[data-on] {
+  background: var(--key-on);
+  color: oklch(0.99 0.005 15);
+  transform: translateY(1.5px) scale(0.965);
+  box-shadow:
+    0 0 0 0 oklch(0.72 0.055 6),
+    0 0 0 4px oklch(0.6 0.185 5 / 0.22),
+    0 8px 22px oklch(0.6 0.185 5 / 0.5),
+    inset 0 1px 0 oklch(1 0 0 / 0.3);
+}
+.key[data-on='live'] {
+  background: var(--berry-800);
+  box-shadow:
+    0 0 0 0 oklch(0.72 0.055 6),
+    0 0 0 4px oklch(0.36 0.1 358 / 0.2),
+    0 8px 20px oklch(0.36 0.1 358 / 0.4),
+    inset 0 1px 0 oklch(1 0 0 / 0.2);
+}
+.key[data-on] .k-globe {
+  filter: brightness(4);
+}
+
+/* The inverted-T arrow cluster: half-height keys. */
+.kb-arrows {
+  flex: none;
+  width: calc(3 * var(--p) - var(--g));
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: 1fr 1fr;
+  gap: 4px var(--g);
+}
+.kb-arrows .key {
+  width: auto;
+  border-radius: 6px;
+  font-size: 8px;
+}
+.kb-arrows .key[data-id='ArrowLeft'] {
+  grid-area: 2 / 1;
+}
+.kb-arrows .key[data-id='ArrowUp'] {
+  grid-area: 1 / 2;
+}
+.kb-arrows .key[data-id='ArrowDown'] {
+  grid-area: 2 / 2;
+}
+.kb-arrows .key[data-id='ArrowRight'] {
+  grid-area: 2 / 3;
+}
+
+/* ---------- trackpad ---------- */
+.tp {
+  position: absolute;
+  left: 300px;
+  top: 432px;
+  width: 400px;
+  height: 246px;
+  border-radius: 16px;
+  background: linear-gradient(180deg, oklch(0.905 0.028 13), oklch(0.878 0.033 10));
+  box-shadow:
+    inset 0 0 0 1.5px oklch(0.8 0.045 8 / 0.9),
+    inset 0 2px 0 oklch(0.97 0.012 14 / 0.6),
+    0 1px 0 oklch(0.96 0.012 14 / 0.8);
+  transition: background-color 0.12s;
+}
+.tp[data-press] {
+  box-shadow:
+    inset 0 0 0 1.5px oklch(0.72 0.07 6),
+    inset 0 3px 8px oklch(0.5 0.1 4 / 0.28);
+}
+/* The outer span only travels; the inner pad lands, presses and lifts. */
+.finger {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 0;
+  height: 0;
+  transition: transform var(--move, 600ms) var(--ease-soft);
+}
+.finger > i {
+  position: absolute;
+  left: -25px;
+  top: -25px;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 42% 36%, oklch(0.64 0.17 4 / 0.8), oklch(0.42 0.15 358 / 0.9));
+  box-shadow:
+    0 0 0 2.5px oklch(1 0 0 / 0.8),
+    0 0 0 10px oklch(0.6 0.185 5 / 0.16),
+    0 6px 14px oklch(0.3 0.09 356 / 0.35);
+  opacity: 0;
+  transform: scale(1.4);
+  transition:
+    opacity 0.22s var(--ease-out),
+    transform 0.22s var(--ease-out),
+    box-shadow 0.18s var(--ease-out);
+}
+.finger.is-thumb > i {
+  left: -30px;
+  width: 60px;
+  transform: scale(1.4) rotate(-28deg);
+}
+.finger[data-down] > i {
+  opacity: 1;
+  transform: scale(1);
+}
+.finger.is-thumb[data-down] > i {
+  transform: scale(1) rotate(-28deg);
+}
+.finger[data-press] > i {
+  transform: scale(0.84);
+  box-shadow:
+    0 0 0 2.5px oklch(1 0 0 / 0.9),
+    0 0 0 9px oklch(0.6 0.185 5 / 0.5),
+    0 0 0 20px oklch(0.6 0.185 5 / 0.16);
+}
+
+/* ---------- lid ---------- */
+.lt-lid {
+  position: absolute;
+  left: 0;
+  top: 8px;
+  width: 1000px;
+  height: 686px;
+  transform-origin: 50% 0 0;
+  transform-style: preserve-3d;
+}
+.lt-lid-outer {
+  position: absolute;
+  inset: 0;
+  border-radius: 34px;
+  transform: translateZ(13px);
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  background:
+    radial-gradient(120% 90% at 22% 8%, oklch(0.97 0.012 16 / 0.7) 0%, oklch(0.97 0.012 16 / 0) 55%),
+    linear-gradient(168deg, var(--alu-hi) 0%, var(--alu) 48%, var(--alu-lo) 100%);
+  box-shadow:
+    inset 0 0 0 1.5px oklch(0.96 0.012 14 / 0.85),
+    inset 0 0 0 3.5px oklch(0.8 0.04 8 / 0.3);
+  display: grid;
+  place-items: center;
+}
+.lt-heart {
+  width: 132px;
+  height: 132px;
+  margin-top: -6px;
+  overflow: visible;
+}
+.lt-heart-glow {
+  position: absolute;
+  width: 420px;
+  height: 420px;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, oklch(0.8 0.16 5 / 0.75), oklch(0.8 0.16 5 / 0) 100%);
+  pointer-events: none;
+}
+.lt-lid-inner {
+  position: absolute;
+  inset: 0;
+  border-radius: 34px;
+  transform: rotateX(180deg);
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  background: var(--alu-lo);
+}
+.lt-glass {
+  position: absolute;
+  inset: 5px;
+  border-radius: 29px;
+  background: var(--glass);
+  box-shadow:
+    inset 0 0 0 1.5px oklch(0.3 0.03 350),
+    0 0 0 1px oklch(0.6 0.05 5 / 0.6);
+}
+.lt-cam {
+  position: absolute;
+  left: 50%;
+  top: 9px;
+  width: 7px;
+  height: 7px;
+  margin-left: -3.5px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 38% 34%, oklch(0.42 0.06 280), oklch(0.2 0.03 300) 60%);
+  box-shadow: 0 0 0 1.5px oklch(0.26 0.02 320);
+}
+.lt-screen {
+  position: absolute;
+  left: 24px;
+  top: 24px;
+  width: 952px;
+  height: 612px;
+  border-radius: 13px 13px 3px 3px;
+  overflow: hidden;
+  background: oklch(0.1 0.01 350);
+}
+.lt-screen-on {
+  position: absolute;
+  inset: 0;
+}
+.lt-sheen {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(118deg, oklch(1 0 0 / 0.09) 0%, oklch(1 0 0 / 0.02) 30%, oklch(1 0 0 / 0) 42%);
+}

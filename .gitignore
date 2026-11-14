@@ -1,0 +1,17 @@
+# Dependencies and generated files
+node_modules/
+.pnpm-store/
+dist/
+coverage/
+*.tsbuildinfo
+
+# Local environment and deployment settings
+.env
+.env.*
+!.env.example
+!.env.*.example
+.vercel/
+
+# Logs and operating system files
+*.log
+.DS_Store
